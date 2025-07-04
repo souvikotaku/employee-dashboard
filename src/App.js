@@ -16,11 +16,11 @@ import {
 
 function App() {
   const [employees, setEmployees] = useState([]);
-  const [view, setView] = useState('grid'); // 'grid' or 'tile'
+  const [view, setView] = useState('grid');
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    id: '', // Added to track the employee ID for editing
+    id: '',
     name: { first: '', last: '' },
     age: '',
     class: '',
@@ -28,6 +28,7 @@ function App() {
     attendance: '',
     email: '',
     phone: '',
+    password: '', // Added password field
     role: 'employee',
   });
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -88,6 +89,7 @@ function App() {
       attendance: '',
       email: '',
       phone: '',
+      password: '', // Initialize password field
       role: 'employee',
     });
     setIsModalOpen(true);
@@ -103,6 +105,7 @@ function App() {
       attendance: employee.attendance,
       email: employee.email,
       phone: employee.phone,
+      password: '', // Password not pre-filled for security
       role: employee.role,
     });
     setIsModalOpen(true);
@@ -158,6 +161,7 @@ function App() {
         attendance: formData.attendance,
         email: formData.email,
         phone: formData.phone,
+        password: formData.password, // Include password in input
         role: formData.role,
       };
       if (formData.id) {
@@ -191,6 +195,7 @@ function App() {
         attendance: '',
         email: '',
         phone: '',
+        password: '', // Reset password field
         role: 'employee',
       });
     } catch (error) {
@@ -207,41 +212,35 @@ function App() {
       <div className='min-h-screen flex items-center justify-center bg-gray-100'>
         <div className='bg-white p-6 rounded shadow-md w-96'>
           <h2 className='text-2xl mb-4 text-center'>Login</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
+          <div className='mb-4'>
+            <label className='block mb-1'>Email</label>
+            <input
+              type='email'
+              name='email'
+              value={loginData.email}
+              onChange={handleLoginInputChange}
+              className='w-full p-2 border rounded'
+              required
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block mb-1'>Password</label>
+            <input
+              type='password'
+              name='password'
+              value={loginData.password}
+              onChange={handleLoginInputChange}
+              className='w-full p-2 border rounded'
+              required
+            />
+          </div>
+          <button
+            type='button'
+            onClick={handleLogin}
+            className='w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
           >
-            <div className='mb-4'>
-              <label className='block mb-1'>Email</label>
-              <input
-                type='email'
-                name='email'
-                value={loginData.email}
-                onChange={handleLoginInputChange}
-                className='w-full p-2 border rounded'
-                required
-              />
-            </div>
-            <div className='mb-4'>
-              <label className='block mb-1'>Password</label>
-              <input
-                type='password'
-                name='password'
-                value={loginData.password}
-                onChange={handleLoginInputChange}
-                className='w-full p-2 border rounded'
-                required
-              />
-            </div>
-            <button
-              type='submit'
-              className='w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-            >
-              Login
-            </button>
-          </form>
+            Login
+          </button>
         </div>
         <ToastContainer />
       </div>
@@ -420,6 +419,17 @@ function App() {
                   onChange={handleInputChange}
                   className='w-full p-1 border rounded'
                   required
+                />
+              </div>
+              <div className='mb-2'>
+                <label className='block'>Password:</label>
+                <input
+                  type='password'
+                  name='password'
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className='w-full p-1 border rounded'
+                  required={!formData.id} // Required only when adding new employee
                 />
               </div>
               <div className='mb-2'>

@@ -11,7 +11,6 @@ const httpLink = new HttpLink({
   uri: 'https://employee-backend-0ifd.onrender.com/graphql',
 });
 
-// Middleware to add the token to headers
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token') || '';
   return {
@@ -22,7 +21,6 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-// Combine the links
 const link = authLink.concat(httpLink);
 
 const client = new ApolloClient({
@@ -30,13 +28,10 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-// Function to set the token after login
 export const setAuthToken = (token) => {
   localStorage.setItem('token', token);
-  // No need to set headers directly; authLink will handle it on the next request
 };
 
-// Example query and mutation functions remain the same
 export const fetchEmployees = async (
   page = 1,
   limit = 10,
@@ -121,6 +116,7 @@ export const addEmployee = async (input) => {
           attendance
           email
           phone
+          password
           role
         }
       }
@@ -146,6 +142,7 @@ export const updateEmployee = async (id, input) => {
           attendance
           email
           phone
+          password
           role
         }
       }
@@ -177,6 +174,6 @@ export const login = async (email, password) => {
     variables: { email, password },
   });
   const token = response.data.login;
-  setAuthToken(token); // Store the token
+  setAuthToken(token);
   return token;
 };

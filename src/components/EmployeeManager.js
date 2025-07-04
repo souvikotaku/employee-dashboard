@@ -19,6 +19,7 @@ function EmployeeManager() {
     attendance: '',
     email: '',
     phone: '',
+    password: '', // Added password field
     role: 'employee',
   });
 
@@ -70,6 +71,7 @@ function EmployeeManager() {
         attendance: formData.attendance,
         email: formData.email,
         phone: formData.phone,
+        password: formData.password, // Include password in input
         role: formData.role,
       };
       const newEmployee = await addEmployee(input);
@@ -83,6 +85,7 @@ function EmployeeManager() {
         attendance: '',
         email: '',
         phone: '',
+        password: '', // Reset password field
         role: 'employee',
       });
     } catch (error) {
@@ -213,6 +216,16 @@ function EmployeeManager() {
                   type='text'
                   name='phone'
                   value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <label>Password:</label>
+                <input
+                  type='password'
+                  name='password'
+                  value={formData.password}
                   onChange={handleInputChange}
                   required
                 />
