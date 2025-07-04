@@ -1,22 +1,166 @@
-export const fetchEmployees = async (page = 1, results = 10) => {
-  try {
-    const response = await fetch(
-      `https://randomuser.me/api/?page=${page}&results=${results}`
-    );
-    const data = await response.json();
-    // Map RandomUser data to employee model
-    return data.results.map((user, index) => ({
-      id: `${page}-${index + 1}`,
-      name: { first: user.name.first, last: user.name.last },
-      age: user.dob.age,
-      class: `Class ${Math.floor(Math.random() * 5) + 1}`,
-      subjects: ['Math', 'Science', 'History'],
-      attendance: `${Math.floor(Math.random() * 100)}%`,
-      email: user.email,
-      phone: user.phone,
-    }));
-  } catch (error) {
-    console.error('Error fetching employees:', error);
-    return [];
-  }
+import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
+
+const httpLink = new HttpLink({
+  uri: 'https://employee-backend-0ifd.onrender.com/graphql', // Replace with your Render URL
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token') || ''}`, // Use stored JWT token
+  },
+});
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});
+
+// Function to set the token after login
+export const setAuthToken = (token) => {
+  localStorage.setItem('token', token);
+  httpLink.setHeaders({
+    Authorization: `Bearer ${token}`,
+  });
+};
+
+// Example query and mutation functions
+export const fetchEmployees = async (
+  page = 1,
+  limit = 10,
+  filter = '',
+  sortBy = '',
+  sortOrder = 'asc'
+) => {
+  const response = await client.query({
+    query: gql`
+      query Employees(
+        $page: Int
+        $limit: Int
+        $filter: String
+        $sortBy: String
+        $sortOrder: String
+      ) {
+        employees(
+          page: $page
+          limit: $limit
+          filter: $filter
+          sortBy: $sortBy
+          sortOrder: $sortOrder
+        ) {
+          id
+          name {
+            first
+            last
+          }
+          age
+          class
+          subjects
+          attendance
+          email
+          phone
+          role
+        }
+      }
+    `,
+    variables: { page, limit, filter, sortBy, sortOrder },
+  });
+  return response.data.employees;
+};
+
+export const fetchEmployee = async (id) => {
+  const response = await client.query({
+    query: gql`
+      query Employee($id: ID!) {
+        employee(id: $id) {
+          id
+          name {
+            first
+            last
+          }
+          age
+          class
+          subjects
+          attendance
+          email
+          phone
+          role
+        }
+      }
+    `,
+    variables: { id },
+  });
+  return response.data.employee;
+};
+
+export const addEmployee = async (input) => {
+  const response = await client.mutate({
+    mutation: gql`
+      mutation AddEmployee($input: EmployeeInput!) {
+        addEmployee(input: $input) {
+          id
+          name {
+            first
+            last
+          }
+          age
+          class
+          subjects
+          attendance
+          email
+          phone
+          role
+        }
+      }
+    `,
+    variables: { input },
+  });
+  return response.data.addEmployee;
+};
+
+export const updateEmployee = async (id, input) => {
+  const response = await client.mutate({
+    mutation: gql`
+      mutation UpdateEmployee($id: ID!, $input: EmployeeInput!) {
+        updateEmployee(id: $id, input: $input) {
+          id
+          name {
+            first
+            last
+          }
+          age
+          class
+          subjects
+          attendance
+          email
+          phone
+          role
+        }
+      }
+    `,
+    variables: { id, input },
+  });
+  return response.data.updateEmployee;
+};
+
+export const deleteEmployee = async (id) => {
+  const response = await client.mutate({
+    mutation: gql`
+      mutation DeleteEmployee($id: ID!) {
+        deleteEmployee(id: $id)
+      }
+    `,
+    variables: { id },
+  });
+  return response.data.deleteEmployee;
+};
+
+export const login = async (email, password) => {
+  const response = await client.mutate({
+    mutation: gql`
+      mutation Login($email: String!, $password: String!) {
+        login(email: $email, password: $password)
+      }
+    `,
+    variables: { email, password },
+  });
+  const token = response.data.login;
+  setAuthToken(token); // Store and set the token
+  return token;
 };
