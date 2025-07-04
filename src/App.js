@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import HamburgerMenu from './components/HamburgerMenu';
 import HorizontalMenu from './components/HorizontalMenu';
 import GridView from './components/GridView';
 import TileView from './components/TileView';
 import DetailedView from './components/DetailedView';
-import { fetchEmployees, addEmployee, login } from './utils/api';
+import {
+  fetchEmployees,
+  addEmployee,
+  login,
+  deleteEmployee,
+  updateEmployee,
+} from './utils/api';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -12,6 +20,7 @@ function App() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    id: '', // Added to track the employee ID for editing
     name: { first: '', last: '' },
     age: '',
     class: '',
@@ -36,13 +45,83 @@ function App() {
   }, [token]);
 
   const handleLogin = async () => {
-    const newToken = await login(loginData.email, loginData.password);
-    setToken(newToken);
-    setShowLogin(false);
+    try {
+      const newToken = await login(loginData.email, loginData.password);
+      setToken(newToken);
+      setShowLogin(false);
+      toast.success('Login successful!', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } catch (error) {
+      if (error.message === 'Invalid credentials') {
+        toast.error('Invalid email or password. Please try again.', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      } else {
+        toast.error('An error occurred. Please try again later.', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    setToken('');
+    localStorage.removeItem('token');
+    setShowLogin(true);
+    toast.info('Logged out successfully!', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
   };
 
   const handleAddEmployeeClick = () => {
+    setFormData({
+      id: '',
+      name: { first: '', last: '' },
+      age: '',
+      class: '',
+      subjects: [''],
+      attendance: '',
+      email: '',
+      phone: '',
+      role: 'employee',
+    });
     setIsModalOpen(true);
+  };
+
+  const handleEditEmployee = (employee) => {
+    setFormData({
+      id: employee.id,
+      name: { first: employee.name.first, last: employee.name.last },
+      age: employee.age,
+      class: employee.class,
+      subjects: employee.subjects,
+      attendance: employee.attendance,
+      email: employee.email,
+      phone: employee.phone,
+      role: employee.role,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteEmployee = async (id) => {
+    try {
+      await deleteEmployee(id);
+      setEmployees(employees.filter((employee) => employee.id !== id));
+      toast.success('Employee deleted successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error('Error deleting employee. Please try again later.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -81,10 +160,30 @@ function App() {
         phone: formData.phone,
         role: formData.role,
       };
-      const newEmployee = await addEmployee(input);
-      setEmployees((prev) => [...prev, newEmployee]);
+      if (formData.id) {
+        // Update existing employee
+        const updatedEmployee = await updateEmployee(formData.id, input);
+        setEmployees(
+          employees.map((emp) =>
+            emp.id === formData.id ? updatedEmployee : emp
+          )
+        );
+        toast.success('Employee updated successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      } else {
+        // Add new employee
+        const newEmployee = await addEmployee(input);
+        setEmployees((prev) => [...prev, newEmployee]);
+        toast.success('Employee added successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }
       setIsModalOpen(false);
       setFormData({
+        id: '',
         name: { first: '', last: '' },
         age: '',
         class: '',
@@ -95,7 +194,11 @@ function App() {
         role: 'employee',
       });
     } catch (error) {
-      console.error('Error adding employee:', error);
+      console.error('Error processing employee:', error);
+      toast.error('Error processing employee. Please try again later.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
@@ -140,6 +243,7 @@ function App() {
             </button>
           </form>
         </div>
+        <ToastContainer />
       </div>
     );
   }
@@ -172,13 +276,28 @@ function App() {
           >
             Add Employee
           </button>
+          <button
+            className='px-4 py-2 bg-red-500 text-white rounded'
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
       </header>
       <main className='p-4'>
         {view === 'grid' ? (
-          <GridView employees={employees} />
+          <GridView
+            employees={employees}
+            onEdit={handleEditEmployee}
+            onDelete={handleDeleteEmployee}
+          />
         ) : (
-          <TileView employees={employees} onTileClick={setSelectedEmployee} />
+          <TileView
+            employees={employees}
+            onEdit={handleEditEmployee}
+            onDelete={handleDeleteEmployee}
+            onTileClick={setSelectedEmployee}
+          />
         )}
       </main>
       {selectedEmployee && (
@@ -211,7 +330,9 @@ function App() {
               width: '300px',
             }}
           >
-            <h2 className='text-xl mb-4'>Add Employee</h2>
+            <h2 className='text-xl mb-4'>
+              {formData.id ? 'Edit Employee' : 'Add Employee'}
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className='mb-2'>
                 <label className='block'>First Name:</label>
@@ -319,7 +440,7 @@ function App() {
                   type='submit'
                   className='px-4 py-2 bg-blue-500 text-white rounded'
                 >
-                  Submit
+                  {formData.id ? 'Update' : 'Submit'}
                 </button>
                 <button
                   type='button'
@@ -333,6 +454,7 @@ function App() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

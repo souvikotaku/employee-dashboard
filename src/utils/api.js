@@ -1,26 +1,42 @@
-import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloLink,
+  gql,
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
 const httpLink = new HttpLink({
-  uri: 'https://employee-backend-0ifd.onrender.com/graphql', // Replace with your Render URL
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('token') || ''}`, // Use stored JWT token
-  },
+  uri: 'https://employee-backend-0ifd.onrender.com/graphql',
 });
 
+// Middleware to add the token to headers
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('token') || '';
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+// Combine the links
+const link = authLink.concat(httpLink);
+
 const client = new ApolloClient({
-  link: httpLink,
+  link,
   cache: new InMemoryCache(),
 });
 
 // Function to set the token after login
 export const setAuthToken = (token) => {
   localStorage.setItem('token', token);
-  httpLink.setHeaders({
-    Authorization: `Bearer ${token}`,
-  });
+  // No need to set headers directly; authLink will handle it on the next request
 };
 
-// Example query and mutation functions
+// Example query and mutation functions remain the same
 export const fetchEmployees = async (
   page = 1,
   limit = 10,
@@ -161,6 +177,6 @@ export const login = async (email, password) => {
     variables: { email, password },
   });
   const token = response.data.login;
-  setAuthToken(token); // Store and set the token
+  setAuthToken(token); // Store the token
   return token;
 };

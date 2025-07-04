@@ -1,40 +1,59 @@
 import React from 'react';
 
-const GridView = ({ employees }) => (
-  <div className='overflow-x-auto'>
-    <table className='min-w-full bg-white shadow-md rounded-lg'>
-      <thead className='bg-gray-200'>
-        <tr>
-          <th className='py-2 px-4'>ID</th>
-          <th className='py-2 px-4'>Name</th>
-          <th className='py-2 px-4'>Age</th>
-          <th className='py-2 px-4'>Class</th>
-          <th className='py-2 px-4'>Subject 1</th>
-          <th className='py-2 px-4'>Subject 2</th>
-          <th className='py-2 px-4'>Subject 3</th>
-          <th className='py-2 px-4'>Attendance</th>
-          <th className='py-2 px-4'>Email</th>
-          <th className='py-2 px-4'>Phone</th>
-        </tr>
-      </thead>
-      <tbody>
-        {employees.map((emp) => (
-          <tr key={emp.id} className='border-t hover:bg-gray-50'>
-            <td className='py-2 px-4'>{emp.id}</td>
-            <td className='py-2 px-4'>{`${emp.name.first} ${emp.name.last}`}</td>
-            <td className='py-2 px-4'>{emp.age}</td>
-            <td className='py-2 px-4'>{emp.class}</td>
-            <td className='py-2 px-4'>{emp.subjects[0]}</td>
-            <td className='py-2 px-4'>{emp.subjects[1]}</td>
-            <td className='py-2 px-4'>{emp.subjects[2]}</td>
-            <td className='py-2 px-4'>{emp.attendance}</td>
-            <td className='py-2 px-4'>{emp.email}</td>
-            <td className='py-2 px-4'>{emp.phone}</td>
+const GridView = ({ employees, onEdit, onDelete }) => {
+  return (
+    <div className='overflow-x-auto'>
+      <table className='min-w-full bg-white border'>
+        <thead>
+          <tr className='bg-gray-200'>
+            <th className='py-2 px-4 border'>ID</th>
+            <th className='py-2 px-4 border'>Name</th>
+            <th className='py-2 px-4 border'>Age</th>
+            <th className='py-2 px-4 border'>Class</th>
+            <th className='py-2 px-4 border'>Subject 1</th>
+            <th className='py-2 px-4 border'>Subject 2</th>
+            <th className='py-2 px-4 border'>Subject 3</th>
+            <th className='py-2 px-4 border'>Attendance</th>
+            <th className='py-2 px-4 border'>Email</th>
+            <th className='py-2 px-4 border'>Phone</th>
+            <th className='py-2 px-4 border'>Action</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+        <tbody>
+          {employees.map((employee) => (
+            <tr key={employee.id} className='hover:bg-gray-100'>
+              <td className='py-2 px-4 border'>{employee.id}</td>
+              <td className='py-2 px-4 border'>
+                {employee.name.first} {employee.name.last}
+              </td>
+              <td className='py-2 px-4 border'>{employee.age}</td>
+              <td className='py-2 px-4 border'>{employee.class}</td>
+              <td className='py-2 px-4 border'>{employee.subjects[0] || ''}</td>
+              <td className='py-2 px-4 border'>{employee.subjects[1] || ''}</td>
+              <td className='py-2 px-4 border'>{employee.subjects[2] || ''}</td>
+              <td className='py-2 px-4 border'>{employee.attendance}</td>
+              <td className='py-2 px-4 border'>{employee.email}</td>
+              <td className='py-2 px-4 border'>{employee.phone}</td>
+              <td className='py-2 px-4 border'>
+                <button
+                  className='mr-2 px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'
+                  onClick={() => onEdit(employee)}
+                >
+                  Edit
+                </button>
+                <button
+                  className='px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600'
+                  onClick={() => onDelete(employee.id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export default GridView;

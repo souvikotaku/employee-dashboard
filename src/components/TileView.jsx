@@ -1,43 +1,47 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const TileView = ({ employees, onTileClick }) => {
-  const [optionsOpen, setOptionsOpen] = useState(null);
-
+const TileView = ({ employees, onEdit, onDelete, onTileClick }) => {
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-      {employees.map((emp) => (
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+      {employees.map((employee) => (
         <div
-          key={emp.id}
-          className='bg-white shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition'
-          onClick={() => onTileClick(emp)}
+          key={employee.id}
+          className='bg-white p-4 rounded shadow hover:shadow-lg cursor-pointer'
+          onClick={() => onTileClick(employee)}
         >
-          <h3 className='text-lg font-semibold'>{`${emp.name.first} ${emp.name.last}`}</h3>
-          <p>Age: {emp.age}</p>
-          <p>Class: {emp.class}</p>
-          <p>Attendance: {emp.attendance}</p>
-          <div className='relative'>
+          <h3 className='text-lg font-semibold'>
+            {employee.name.first} {employee.name.last}
+          </h3>
+          <p className='text-sm text-gray-600'>Age: {employee.age}</p>
+          <p className='text-sm text-gray-600'>Class: {employee.class}</p>
+          <p className='text-sm text-gray-600'>
+            Subjects: {employee.subjects.join(', ')}
+          </p>
+          <p className='text-sm text-gray-600'>
+            Attendance: {employee.attendance}%
+          </p>
+          <p className='text-sm text-gray-600'>Email: {employee.email}</p>
+          <p className='text-sm text-gray-600'>Phone: {employee.phone}</p>
+          <p className='text-sm text-gray-600'>Role: {employee.role}</p>
+          <div className='mt-2 flex justify-end space-x-2'>
             <button
-              className='mt-2 bg-blue-500 text-white px-3 py-1 rounded'
+              className='px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'
               onClick={(e) => {
-                e.stopPropagation();
-                setOptionsOpen(optionsOpen === emp.id ? null : emp.id);
+                e.stopPropagation(); // Prevent tile click
+                onEdit(employee);
               }}
             >
-              Options
+              Edit
             </button>
-            {optionsOpen === emp.id && (
-              <div className='absolute bg-white shadow-md rounded mt-1'>
-                <button className='block px-4 py-2 hover:bg-gray-100 w-full text-left'>
-                  Edit
-                </button>
-                <button className='block px-4 py-2 hover:bg-gray-100 w-full text-left'>
-                  Flag
-                </button>
-                <button className='block px-4 py-2 hover:bg-gray-100 w-full text-left'>
-                  Delete
-                </button>
-              </div>
-            )}
+            <button
+              className='px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600'
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent tile click
+                onDelete(employee.id);
+              }}
+            >
+              Delete
+            </button>
           </div>
         </div>
       ))}
