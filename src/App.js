@@ -12,7 +12,9 @@ import {
   login,
   deleteEmployee,
   updateEmployee,
+  fetchEmployeeByEmail,
 } from './utils/api';
+import { jwtDecode } from 'jwt-decode';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -28,18 +30,32 @@ function App() {
     attendance: '',
     email: '',
     phone: '',
-    password: '', // Added password field
+    password: '',
     role: 'employee',
   });
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [showLogin, setShowLogin] = useState(!token);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
     const loadEmployees = async () => {
       if (token) {
         const data = await fetchEmployees(1, 10);
-        setEmployees(data);
+        const decodedToken = jwtDecode(token);
+        const userEmail = decodedToken.email;
+        const userRole = decodedToken.role;
+        const employee = await fetchEmployeeByEmail(userEmail);
+        setLoggedInUser({ ...employee, role: userRole });
+
+        if (userRole === 'admin') {
+          setEmployees(data); // Admin sees all employees
+        } else {
+          const filteredEmployees = data.filter(
+            (emp) => emp.email === userEmail
+          );
+          setEmployees(filteredEmployees); // Employee sees only their data
+        }
       }
     };
     loadEmployees();
@@ -73,6 +89,7 @@ function App() {
     setToken('');
     localStorage.removeItem('token');
     setShowLogin(true);
+    setLoggedInUser(null);
     toast.info('Logged out successfully!', {
       position: 'top-right',
       autoClose: 3000,
@@ -89,7 +106,7 @@ function App() {
       attendance: '',
       email: '',
       phone: '',
-      password: '', // Initialize password field
+      password: '',
       role: 'employee',
     });
     setIsModalOpen(true);
@@ -105,7 +122,7 @@ function App() {
       attendance: employee.attendance,
       email: employee.email,
       phone: employee.phone,
-      password: '', // Password not pre-filled for security
+      password: '',
       role: employee.role,
     });
     setIsModalOpen(true);
@@ -161,7 +178,7 @@ function App() {
         attendance: formData.attendance,
         email: formData.email,
         phone: formData.phone,
-        password: formData.password, // Include password in input
+        password: formData.password,
         role: formData.role,
       };
       if (formData.id) {
@@ -195,7 +212,7 @@ function App() {
         attendance: '',
         email: '',
         phone: '',
-        password: '', // Reset password field
+        password: '',
         role: 'employee',
       });
     } catch (error) {
@@ -269,12 +286,15 @@ function App() {
           >
             Tile View
           </button>
-          <button
-            className='px-4 py-2 bg-green-500 text-white rounded'
-            onClick={handleAddEmployeeClick}
-          >
-            Add Employee
-          </button>
+          {loggedInUser?.role === 'admin' && (
+            <button
+              className='px-4 py-2 bg-green-500 text-white rounded'
+              onClick={handleAddEmployeeClick}
+            >
+              Add Employee
+            </button>
+          )}
+
           <button
             className='px-4 py-2 bg-red-500 text-white rounded'
             onClick={handleLogout}
@@ -283,6 +303,14 @@ function App() {
           </button>
         </div>
       </header>
+      {loggedInUser && (
+        <div className='p-4 bg-gray-200 text-center'>
+          <h2 className='text-xl'>
+            Welcome {loggedInUser.name.first} {loggedInUser.name.last} (
+            {loggedInUser.email}) - Role: {loggedInUser.role}
+          </h2>
+        </div>
+      )}
       <main className='p-4'>
         {view === 'grid' ? (
           <GridView
@@ -305,7 +333,6 @@ function App() {
           onClose={() => setSelectedEmployee(null)}
         />
       )}
-
       {isModalOpen && (
         <div
           className='modal'
@@ -424,12 +451,12 @@ function App() {
               <div className='mb-2'>
                 <label className='block'>Password:</label>
                 <input
-                  type='password'
+                  type='text'
                   name='password'
                   value={formData.password}
                   onChange={handleInputChange}
                   className='w-full p-1 border rounded'
-                  required={!formData.id} // Required only when adding new employee
+                  required={!formData.id}
                 />
               </div>
               <div className='mb-2'>

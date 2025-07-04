@@ -75,6 +75,31 @@ export const fetchEmployees = async (
   return response.data.employees;
 };
 
+export const fetchEmployeeByEmail = async (email) => {
+  const response = await client.query({
+    query: gql`
+      query EmployeeByEmail($email: String!) {
+        employeeByEmail(email: $email) {
+          id
+          name {
+            first
+            last
+          }
+          age
+          class
+          subjects
+          attendance
+          email
+          phone
+          role
+        }
+      }
+    `,
+    variables: { email },
+  });
+  return response.data.employeeByEmail;
+};
+
 export const fetchEmployee = async (id) => {
   const response = await client.query({
     query: gql`

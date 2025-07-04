@@ -33,7 +33,7 @@ const TileView = ({ employees, onEdit, onDelete, onTileClick }) => {
             >
               Edit
             </button>
-            <button
+            {/* <button
               className='px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600'
               onClick={(e) => {
                 e.stopPropagation(); // Prevent tile click
@@ -41,7 +41,7 @@ const TileView = ({ employees, onEdit, onDelete, onTileClick }) => {
               }}
             >
               Delete
-            </button>
+            </button> */}
           </div>
         </div>
       ))}
