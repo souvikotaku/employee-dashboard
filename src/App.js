@@ -36,7 +36,8 @@ function App() {
   });
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isLoggingOut, setIsLoggingOut] = useState(false); // New state for logout loading
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for submit loading
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +79,7 @@ function App() {
   }, [employees]);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true); // Set logout loading state to true
+    setIsLoggingOut(true);
     try {
       localStorage.removeItem('token');
       setLoggedInUser(null);
@@ -88,14 +89,14 @@ function App() {
       });
       setTimeout(() => {
         window.location.href = '/login';
-      }, 1000); // Small delay to show the loader
+      }, 1000);
     } catch (error) {
       toast.error('Error logging out. Please try again.', {
         position: 'top-right',
         autoClose: 3000,
       });
     } finally {
-      setIsLoggingOut(false); // Reset logout loading state
+      setIsLoggingOut(false);
     }
   };
 
@@ -167,6 +168,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Set submitting state to true
     try {
       const input = {
         name: { first: formData.name.first, last: formData.name.last },
@@ -216,6 +218,8 @@ function App() {
         position: 'top-right',
         autoClose: 3000,
       });
+    } finally {
+      setIsSubmitting(false); // Reset submitting state
     }
   };
 
@@ -271,53 +275,7 @@ function App() {
           }
         `}
       </style>
-      {/* <header className='flex items-center justify-between p-4 bg-gray-800 shadow-lg border-b border-green-500/30'>
-        <HamburgerMenu />
-        <HorizontalMenu />
-        <div className='flex space-x-4'>
-          <button
-            className={`px-4 py-2 rounded ${
-              view === 'grid' ? 'bg-green-600 text-white' : 'bg-gray-700'
-            } hover:bg-green-700 transition duration-200`}
-            onClick={() => setView('grid')}
-          >
-            Grid View
-          </button>
-          <button
-            className={`buttonres px-4 py-2 rounded ${
-              view === 'tile' ? 'bg-green-600 text-white' : 'bg-gray-700'
-            } hover:bg-green-700 transition duration-200`}
-            onClick={() => setView('tile')}
-          >
-            Tile View
-          </button>
-          {loggedInUser?.role === 'admin' && (
-            <button
-              className='buttonres px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
-              onClick={handleAddEmployeeClick}
-            >
-              Add Employee
-            </button>
-          )}
-          <button
-            className='buttonres px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition duration-200 flex items-center justify-center'
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-          >
-            {isLoggingOut ? (
-              <RotatingLines
-                strokeColor='white'
-                strokeWidth='5'
-                animationDuration='0.75'
-                width='24'
-                visible={true}
-              />
-            ) : (
-              'Logout'
-            )}
-          </button>
-        </div>
-      </header> */}
+
       <Header
         view={view}
         setView={setView}
@@ -563,9 +521,22 @@ function App() {
               <div className='flex justify-end space-x-2'>
                 <button
                   type='submit'
-                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
+                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200 flex items-center justify-center'
+                  disabled={isSubmitting}
                 >
-                  {formData.id ? 'Update' : 'Submit'}
+                  {isSubmitting ? (
+                    <RotatingLines
+                      strokeColor='white'
+                      strokeWidth='5'
+                      animationDuration='0.75'
+                      width='24'
+                      visible={true}
+                    />
+                  ) : formData.id ? (
+                    'Update'
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
                 <button
                   type='button'
