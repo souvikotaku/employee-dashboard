@@ -88,7 +88,7 @@ function App() {
         autoClose: 3000,
       });
       setTimeout(() => {
-        window.location.href = '/login';
+        window.location.href = '/';
       }, 1000);
     } catch (error) {
       toast.error('Error logging out. Please try again.', {
