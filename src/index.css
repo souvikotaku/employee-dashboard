@@ -76,6 +76,9 @@
   .buttonres {
     margin-left: 0 !important;
   }
+  .hidethisinmobile {
+    display: none !important;
+  }
 }
 
 @keyframes glitch {
