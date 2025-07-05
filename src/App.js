@@ -9,7 +9,6 @@ import DetailedView from './components/DetailedView';
 import {
   fetchEmployees,
   addEmployee,
-  login,
   deleteEmployee,
   updateEmployee,
   fetchEmployeeByEmail,
@@ -33,13 +32,12 @@ function App() {
     password: '',
     role: 'employee',
   });
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [showLogin, setShowLogin] = useState(!token);
   const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
     const loadEmployees = async () => {
+      const token = localStorage.getItem('token');
+
       if (token) {
         const data = await fetchEmployees(1, 10);
         const decodedToken = jwtDecode(token);
@@ -49,47 +47,22 @@ function App() {
         setLoggedInUser({ ...employee, role: userRole });
 
         if (userRole === 'admin') {
-          setEmployees(data); // Admin sees all employees
+          setEmployees(data);
         } else {
           const filteredEmployees = data.filter(
             (emp) => emp.email === userEmail
           );
-          setEmployees(filteredEmployees); // Employee sees only their data
+          setEmployees(filteredEmployees);
         }
       }
     };
     loadEmployees();
-  }, [token]);
-
-  const handleLogin = async () => {
-    try {
-      const newToken = await login(loginData.email, loginData.password);
-      setToken(newToken);
-      setShowLogin(false);
-      toast.success('Login successful!', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
-    } catch (error) {
-      if (error.message === 'Invalid credentials') {
-        toast.error('Invalid email or password. Please try again.', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-      } else {
-        toast.error('An error occurred. Please try again later.', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-      }
-    }
-  };
+  }, []);
 
   const handleLogout = () => {
-    setToken('');
     localStorage.removeItem('token');
-    setShowLogin(true);
     setLoggedInUser(null);
+    window.location.href = '/login';
     toast.info('Logged out successfully!', {
       position: 'top-right',
       autoClose: 3000,
@@ -162,11 +135,6 @@ function App() {
     }
   };
 
-  const handleLoginInputChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -182,7 +150,6 @@ function App() {
         role: formData.role,
       };
       if (formData.id) {
-        // Update existing employee
         const updatedEmployee = await updateEmployee(formData.id, input);
         setEmployees(
           employees.map((emp) =>
@@ -194,7 +161,6 @@ function App() {
           autoClose: 3000,
         });
       } else {
-        // Add new employee
         const newEmployee = await addEmployee(input);
         setEmployees((prev) => [...prev, newEmployee]);
         toast.success('Employee added successfully!', {
@@ -216,53 +182,12 @@ function App() {
         role: 'employee',
       });
     } catch (error) {
-      console.error('Error processing employee:', error);
       toast.error('Error processing employee. Please try again later.', {
         position: 'top-right',
         autoClose: 3000,
       });
     }
   };
-
-  if (showLogin) {
-    return (
-      <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-        <div className='bg-white p-6 rounded shadow-md w-96'>
-          <h2 className='text-2xl mb-4 text-center'>Login</h2>
-          <div className='mb-4'>
-            <label className='block mb-1'>Email</label>
-            <input
-              type='email'
-              name='email'
-              value={loginData.email}
-              onChange={handleLoginInputChange}
-              className='w-full p-2 border rounded'
-              required
-            />
-          </div>
-          <div className='mb-4'>
-            <label className='block mb-1'>Password</label>
-            <input
-              type='password'
-              name='password'
-              value={loginData.password}
-              onChange={handleLoginInputChange}
-              className='w-full p-2 border rounded'
-              required
-            />
-          </div>
-          <button
-            type='button'
-            onClick={handleLogin}
-            className='w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-          >
-            Login
-          </button>
-        </div>
-        <ToastContainer />
-      </div>
-    );
-  }
 
   return (
     <div className='min-h-screen bg-gray-100'>
@@ -294,7 +219,6 @@ function App() {
               Add Employee
             </button>
           )}
-
           <button
             className='px-4 py-2 bg-red-500 text-white rounded'
             onClick={handleLogout}
@@ -334,28 +258,8 @@ function App() {
         />
       )}
       {isModalOpen && (
-        <div
-          className='modal'
-          style={{
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '5px',
-              width: '300px',
-            }}
-          >
+        <div className='modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
+          <div className='bg-white p-4 rounded w-96'>
             <h2 className='text-xl mb-4'>
               {formData.id ? 'Edit Employee' : 'Add Employee'}
             </h2>
@@ -405,7 +309,7 @@ function App() {
                 />
               </div>
               <div className='mb-2'>
-                <label className='block'>Subjects (comma-separated):</label>
+                <label className='block'>Subjects:</label>
                 <input
                   type='text'
                   name='subjects'
@@ -416,7 +320,7 @@ function App() {
                 />
               </div>
               <div className='mb-2'>
-                <label className='block'>Attendance (%):</label>
+                <label className='block'>Attendance:</label>
                 <input
                   type='text'
                   name='attendance'
@@ -448,17 +352,19 @@ function App() {
                   required
                 />
               </div>
-              <div className='mb-2'>
-                <label className='block'>Password:</label>
-                <input
-                  type='text'
-                  name='password'
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required={!formData.id}
-                />
-              </div>
+              {!formData.id && (
+                <div className='mb-2'>
+                  <label className='block'>Password:</label>
+                  <input
+                    type='text'
+                    name='password'
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className='w-full p-1 border rounded'
+                    required
+                  />
+                </div>
+              )}
               <div className='mb-2'>
                 <label className='block'>Role:</label>
                 <select

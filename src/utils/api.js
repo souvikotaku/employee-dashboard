@@ -167,7 +167,6 @@ export const updateEmployee = async (id, input) => {
           attendance
           email
           phone
-          password
           role
         }
       }
