@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../utils/api';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -31,7 +31,7 @@ const LoginPage = () => {
       <div className='bg-white p-6 rounded shadow-md w-96'>
         <h2 className='text-2xl mb-4 text-center'>Login</h2>
         <div className='mb-4'>
-          <label>Email</label>
+          <label className='block'>Email</label>
           <input
             type='email'
             name='email'
@@ -41,7 +41,7 @@ const LoginPage = () => {
           />
         </div>
         <div className='mb-4'>
-          <label>Password</label>
+          <label className='block'>Password</label>
           <input
             type='password'
             name='password'
@@ -52,11 +52,18 @@ const LoginPage = () => {
         </div>
         <button
           onClick={handleLogin}
-          className='w-full py-2 bg-blue-500 text-white rounded'
+          className='w-full py-2 bg-blue-500 text-white rounded mb-2'
         >
           Login
         </button>
+        <button
+          onClick={() => navigate('/signup')}
+          className='w-full py-2 bg-green-500 text-white rounded'
+        >
+          Sign Up
+        </button>
       </div>
+      <ToastContainer />
     </div>
   );
 };
