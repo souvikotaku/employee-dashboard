@@ -190,37 +190,37 @@ function App() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-100'>
-      <header className='flex items-center justify-between p-4 bg-white shadow'>
+    <div className='min-h-screen bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+      <header className='flex items-center justify-between p-4 bg-gray-800 shadow-lg border-b border-green-500/30'>
         <HamburgerMenu />
         <HorizontalMenu />
         <div className='flex space-x-4'>
           <button
             className={`px-4 py-2 rounded ${
-              view === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            }`}
+              view === 'grid' ? 'bg-green-600 text-white' : 'bg-gray-700'
+            } hover:bg-green-700 transition duration-200`}
             onClick={() => setView('grid')}
           >
             Grid View
           </button>
           <button
             className={`px-4 py-2 rounded ${
-              view === 'tile' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            }`}
+              view === 'tile' ? 'bg-green-600 text-white' : 'bg-gray-700'
+            } hover:bg-green-700 transition duration-200`}
             onClick={() => setView('tile')}
           >
             Tile View
           </button>
           {loggedInUser?.role === 'admin' && (
             <button
-              className='px-4 py-2 bg-green-500 text-white rounded'
+              className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
               onClick={handleAddEmployeeClick}
             >
               Add Employee
             </button>
           )}
           <button
-            className='px-4 py-2 bg-red-500 text-white rounded'
+            className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition duration-200'
             onClick={handleLogout}
           >
             Logout
@@ -228,7 +228,7 @@ function App() {
         </div>
       </header>
       {loggedInUser && (
-        <div className='p-4 bg-gray-200 text-center'>
+        <div className='p-4 bg-gray-700 text-center border-b border-green-500/30'>
           <h2 className='text-xl'>
             Welcome {loggedInUser.name.first} {loggedInUser.name.last} (
             {loggedInUser.email}) - Role: {loggedInUser.role}
@@ -259,136 +259,164 @@ function App() {
       )}
       {isModalOpen && (
         <div className='modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
-          <div className='bg-white p-4 rounded w-96'>
-            <h2 className='text-xl mb-4'>
+          <div className='bg-gray-800 p-6 rounded-lg w-96 shadow-lg border border-green-500/30'>
+            <h2 className='text-2xl mb-4 text-center text-green-400 subtle-glow'>
               {formData.id ? 'Edit Employee' : 'Add Employee'}
             </h2>
-            <form onSubmit={handleSubmit}>
-              <div className='mb-2'>
-                <label className='block'>First Name:</label>
-                <input
-                  type='text'
-                  name='name.first'
-                  value={formData.name.first}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                />
+            <form onSubmit={handleSubmit} className='space-y-4'>
+              <div className='flex space-x-2'>
+                <div className='w-1/2'>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    First Name
+                  </label>
+                  <input
+                    type='text'
+                    name='name.first'
+                    value={formData.name.first}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  />
+                </div>
+                <div className='w-1/2'>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Last Name
+                  </label>
+                  <input
+                    type='text'
+                    name='name.last'
+                    value={formData.name.last}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  />
+                </div>
               </div>
-              <div className='mb-2'>
-                <label className='block'>Last Name:</label>
-                <input
-                  type='text'
-                  name='name.last'
-                  value={formData.name.last}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                />
+              <div className='flex space-x-2'>
+                <div className='w-1/2'>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Age
+                  </label>
+                  <input
+                    type='number'
+                    name='age'
+                    value={formData.age}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  />
+                </div>
+                <div className='w-1/2'>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Class
+                  </label>
+                  <input
+                    type='text'
+                    name='class'
+                    value={formData.class}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  />
+                </div>
               </div>
-              <div className='mb-2'>
-                <label className='block'>Age:</label>
-                <input
-                  type='number'
-                  name='age'
-                  value={formData.age}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                />
-              </div>
-              <div className='mb-2'>
-                <label className='block'>Class:</label>
-                <input
-                  type='text'
-                  name='class'
-                  value={formData.class}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                />
-              </div>
-              <div className='mb-2'>
-                <label className='block'>Subjects:</label>
+              <div>
+                <label className='block text-sm font-medium text-gray-300'>
+                  Subjects
+                </label>
                 <input
                   type='text'
                   name='subjects'
                   value={formData.subjects.join(',')}
                   onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
+                  className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
                   required
                 />
               </div>
-              <div className='mb-2'>
-                <label className='block'>Attendance:</label>
+              <div>
+                <label className='block text-sm font-medium text-gray-300'>
+                  Attendance
+                </label>
                 <input
                   type='text'
                   name='attendance'
                   value={formData.attendance}
                   onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
+                  className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
                   required
                 />
               </div>
-              <div className='mb-2'>
-                <label className='block'>Email:</label>
-                <input
-                  type='email'
-                  name='email'
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                />
-              </div>
-              <div className='mb-2'>
-                <label className='block'>Phone:</label>
-                <input
-                  type='text'
-                  name='phone'
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                />
+              <div className='flex space-x-2'>
+                <div className='w-1/2'>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Email
+                  </label>
+                  <input
+                    type='email'
+                    name='email'
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  />
+                </div>
+                <div className='w-1/2'>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Phone
+                  </label>
+                  <input
+                    type='text'
+                    name='phone'
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  />
+                </div>
               </div>
               {!formData.id && (
-                <div className='mb-2'>
-                  <label className='block'>Password:</label>
+                <div>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Password
+                  </label>
                   <input
                     type='text'
                     name='password'
                     value={formData.password}
                     onChange={handleInputChange}
-                    className='w-full p-1 border rounded'
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
                     required
                   />
                 </div>
               )}
-              <div className='mb-2'>
-                <label className='block'>Role:</label>
-                <select
-                  name='role'
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className='w-full p-1 border rounded'
-                  required
-                >
-                  <option value='employee'>Employee</option>
-                  <option value='admin'>Admin</option>
-                </select>
-              </div>
+              {loggedInUser?.role === 'admin' && (
+                <div>
+                  <label className='block text-sm font-medium text-gray-300'>
+                    Role
+                  </label>
+                  <select
+                    name='role'
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                    required
+                  >
+                    <option value='employee'>Employee</option>
+                    <option value='admin'>Admin</option>
+                  </select>
+                </div>
+              )}
               <div className='flex justify-end space-x-2'>
                 <button
                   type='submit'
-                  className='px-4 py-2 bg-blue-500 text-white rounded'
+                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
                 >
                   {formData.id ? 'Update' : 'Submit'}
                 </button>
                 <button
                   type='button'
                   onClick={() => setIsModalOpen(false)}
-                  className='px-4 py-2 bg-gray-300 rounded'
+                  className='px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-200'
                 >
                   Cancel
                 </button>

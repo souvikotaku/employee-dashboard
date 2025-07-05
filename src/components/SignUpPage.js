@@ -64,133 +64,161 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-      <div className='bg-white p-6 rounded shadow-md w-96'>
-        <h2 className='text-2xl mb-4 text-center'>Sign Up</h2>
-        <form onSubmit={handleSubmit}>
-          <div className='mb-2'>
-            <label className='block'>First Name:</label>
-            <input
-              type='text'
-              name='name.first'
-              value={formData.name.first}
-              onChange={handleInputChange}
-              className='w-full p-1 border rounded'
-              required
-            />
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+      <div className='bg-gray-800 p-6 rounded-lg shadow-lg w-96 border border-green-500/30'>
+        <h2 className='text-3xl mb-6 text-center font-bold text-green-400 subtle-glow'>
+          Sign Up
+        </h2>
+        <form onSubmit={handleSubmit} className='space-y-4'>
+          <div className='flex space-x-2'>
+            <div className='w-1/2'>
+              <label className='block text-sm font-medium text-gray-300'>
+                First Name
+              </label>
+              <input
+                type='text'
+                name='name.first'
+                value={formData.name.first}
+                onChange={handleInputChange}
+                className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                required
+              />
+            </div>
+            <div className='w-1/2'>
+              <label className='block text-sm font-medium text-gray-300'>
+                Last Name
+              </label>
+              <input
+                type='text'
+                name='name.last'
+                value={formData.name.last}
+                onChange={handleInputChange}
+                className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                required
+              />
+            </div>
           </div>
-          <div className='mb-2'>
-            <label className='block'>Last Name:</label>
-            <input
-              type='text'
-              name='name.last'
-              value={formData.name.last}
-              onChange={handleInputChange}
-              className='w-full p-1 border rounded'
-              required
-            />
+          <div className='flex space-x-2'>
+            <div className='w-1/2'>
+              <label className='block text-sm font-medium text-gray-300'>
+                Age
+              </label>
+              <input
+                type='number'
+                name='age'
+                value={formData.age}
+                onChange={handleInputChange}
+                className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                required
+              />
+            </div>
+            <div className='w-1/2'>
+              <label className='block text-sm font-medium text-gray-300'>
+                Class
+              </label>
+              <input
+                type='text'
+                name='class'
+                value={formData.class}
+                onChange={handleInputChange}
+                className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                required
+              />
+            </div>
           </div>
-          <div className='mb-2'>
-            <label className='block'>Age:</label>
-            <input
-              type='number'
-              name='age'
-              value={formData.age}
-              onChange={handleInputChange}
-              className='w-full p-1 border rounded'
-              required
-            />
-          </div>
-          <div className='mb-2'>
-            <label className='block'>Class:</label>
-            <input
-              type='text'
-              name='class'
-              value={formData.class}
-              onChange={handleInputChange}
-              className='w-full p-1 border rounded'
-              required
-            />
-          </div>
-          <div className='mb-2'>
-            <label className='block'>Subjects:</label>
+          <div>
+            <label className='block text-sm font-medium text-gray-300'>
+              Subjects
+            </label>
             <input
               type='text'
               name='subjects'
               value={formData.subjects.join(',')}
               onChange={handleInputChange}
-              className='w-full p-1 border rounded'
+              className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
               required
             />
           </div>
-          <div className='mb-2'>
-            <label className='block'>Attendance:</label>
+          <div>
+            <label className='block text-sm font-medium text-gray-300'>
+              Attendance
+            </label>
             <input
               type='text'
               name='attendance'
               value={formData.attendance}
               onChange={handleInputChange}
-              className='w-full p-1 border rounded'
+              className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
               required
             />
           </div>
-          <div className='mb-2'>
-            <label className='block'>Email:</label>
-            <input
-              type='email'
-              name='email'
-              value={formData.email}
-              onChange={handleInputChange}
-              className='w-full p-1 border rounded'
-              required
-            />
+          <div className='flex space-x-2'>
+            <div className='w-1/2'>
+              <label className='block text-sm font-medium text-gray-300'>
+                Email
+              </label>
+              <input
+                type='email'
+                name='email'
+                value={formData.email}
+                onChange={handleInputChange}
+                className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                required
+              />
+            </div>
+            <div className='w-1/2'>
+              <label className='block text-sm font-medium text-gray-300'>
+                Phone
+              </label>
+              <input
+                type='text'
+                name='phone'
+                value={formData.phone}
+                onChange={handleInputChange}
+                className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+                required
+              />
+            </div>
           </div>
-          <div className='mb-2'>
-            <label className='block'>Phone:</label>
-            <input
-              type='text'
-              name='phone'
-              value={formData.phone}
-              onChange={handleInputChange}
-              className='w-full p-1 border rounded'
-              required
-            />
-          </div>
-          <div className='mb-2'>
-            <label className='block'>Password:</label>
+          <div>
+            <label className='block text-sm font-medium text-gray-300'>
+              Password
+            </label>
             <input
               type='password'
               name='password'
               value={formData.password}
               onChange={handleInputChange}
-              className='w-full p-1 border rounded'
+              className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
               required
             />
           </div>
-          <div className='mb-2'>
-            <label className='block'>Role:</label>
+          <div>
+            <label className='block text-sm font-medium text-gray-300'>
+              Role
+            </label>
             <select
               name='role'
               value={formData.role}
               onChange={handleInputChange}
-              className='w-full p-1 border rounded'
+              className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
               required
             >
               <option value='employee'>Employee</option>
               <option value='admin'>Admin</option>
             </select>
           </div>
-          <div className='flex space-x-2'>
+          <div className='flex space-x-3'>
             <button
               type='submit'
-              className='px-4 py-2 bg-blue-500 text-white rounded'
+              className='w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-200'
             >
               Sign Up
             </button>
             <button
               type='button'
               onClick={() => navigate('/login')}
-              className='px-4 py-2 bg-gray-300 rounded'
+              className='w-full py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition duration-200'
             >
               Login
             </button>

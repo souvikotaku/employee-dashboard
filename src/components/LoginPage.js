@@ -16,8 +16,13 @@ const LoginPage = () => {
     try {
       const token = await login(loginData.email, loginData.password);
       localStorage.setItem('token', token);
-      toast.success('Login successful!');
       navigate('/dashboard');
+      setTimeout(() => {
+        toast.success('Login successful!', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }, 1000);
     } catch (error) {
       toast.error('Invalid credentials', {
         position: 'top-right',
@@ -27,41 +32,53 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-      <div className='bg-white p-6 rounded shadow-md w-96'>
-        <h2 className='text-2xl mb-4 text-center'>Login</h2>
-        <div className='mb-4'>
-          <label className='block'>Email</label>
-          <input
-            type='email'
-            name='email'
-            value={loginData.email}
-            onChange={handleInputChange}
-            className='w-full p-2 border rounded'
-          />
-        </div>
-        <div className='mb-4'>
-          <label className='block'>Password</label>
-          <input
-            type='password'
-            name='password'
-            value={loginData.password}
-            onChange={handleInputChange}
-            className='w-full p-2 border rounded'
-          />
-        </div>
-        <button
-          onClick={handleLogin}
-          className='w-full py-2 bg-blue-500 text-white rounded mb-2'
-        >
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+      <div className='bg-gray-800 p-6 rounded-lg shadow-lg w-96 border border-green-500/30'>
+        <h2 className='text-3xl mb-6 text-center font-bold text-green-400 subtle-glow'>
           Login
-        </button>
-        <button
-          onClick={() => navigate('/signup')}
-          className='w-full py-2 bg-green-500 text-white rounded'
-        >
-          Sign Up
-        </button>
+        </h2>
+        <div className='space-y-4'>
+          <div>
+            <label className='block text-sm font-medium text-gray-300'>
+              Email
+            </label>
+            <input
+              type='email'
+              name='email'
+              value={loginData.email}
+              onChange={handleInputChange}
+              className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+              required
+            />
+          </div>
+          <div>
+            <label className='block text-sm font-medium text-gray-300'>
+              Password
+            </label>
+            <input
+              type='password'
+              name='password'
+              value={loginData.password}
+              onChange={handleInputChange}
+              className='w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+              required
+            />
+          </div>
+          <div className='space-y-2'>
+            <button
+              onClick={handleLogin}
+              className='w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-200'
+            >
+              Login
+            </button>
+            <button
+              onClick={() => navigate('/signup')}
+              className='w-full py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition duration-200'
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
       </div>
       <ToastContainer />
     </div>
