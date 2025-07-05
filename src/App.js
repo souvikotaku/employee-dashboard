@@ -224,7 +224,25 @@ function App() {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+    <div className='min-h-screen relative bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+      <div
+        className='fixed pointer-events-none select-none overflow-hidden'
+        style={{
+          left: 0,
+          bottom: 0,
+          zIndex: 0,
+          width: '60rem',
+          opacity: 0.08,
+          transform: 'rotate(30deg) translateX(-30%) translateY(30%)',
+        }}
+      >
+        <img
+          src='/warhammer1.png'
+          alt='Warhammer 40K Logo'
+          className='w-full'
+        />
+      </div>
+
       <style>
         {`
           @media (max-width: 768px) {
@@ -293,6 +311,20 @@ function App() {
           </h2>
         </div>
       )}
+
+      {/* <div className='absolute w-full'> */}
+      {/* <img
+        src='/warhammer1.png'
+        alt='Warhammer 40K Logo'
+        className='absolute -translate-x-1/2 pointer-events-none select-none'
+        style={{
+          width: '60rem',
+          opacity: 0.08,
+          transform: 'rotate(8deg)',
+          // bottom: '0%',
+        }}
+      /> */}
+      {/* </div> */}
 
       <main className='p-4'>
         {loading ? (
@@ -550,6 +582,17 @@ function App() {
           </div>
         </div>
       )}
+      {/* <img
+        src='/warhammer1.png'
+        alt='Warhammer 40K Logo'
+        className='absolute w-40 pointer-events-none select-none'
+        style={{
+          width: '50rem',
+          bottom: '0%',
+          opacity: 0.1,
+        }}
+      /> */}
+
       <ToastContainer />
     </div>
   );
