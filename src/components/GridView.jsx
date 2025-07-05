@@ -82,7 +82,7 @@ const GridView = ({ employees, onEdit, onDelete, userRole, userId }) => {
               <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
                 {employee.role || 'N/A'}
               </td>
-              <td className='py-2 px-4 border border-green-500/30'>
+              <td className='py-2 px-4 border border-green-500/30 buttonsmallscreen'>
                 <button
                   className='px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
                   onClick={() => onEdit(employee)}
@@ -93,7 +93,7 @@ const GridView = ({ employees, onEdit, onDelete, userRole, userId }) => {
                   userRole !== 'employee' &&
                   userId !== employee.id && (
                     <button
-                      className='px-2 py-1 bg-red-500 text-white rounded ml-3 hover:bg-red-600'
+                      className='px-2 py-1 bg-red-500 text-white rounded ml-3 hover:bg-red-600 buttonsmalldelete'
                       onClick={() => onDelete(employee.id)}
                     >
                       Delete

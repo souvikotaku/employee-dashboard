@@ -284,7 +284,7 @@ function App() {
               width: 100%;
             }
             .pagination {
-              flex-direction: column;
+              // flex-direction: column;
               align-items: center;
             }
             .pagination button {

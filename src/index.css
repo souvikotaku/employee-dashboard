@@ -81,6 +81,16 @@
   }
 }
 
+@media (max-width: 1346px) {
+  .buttonsmallscreen {
+    display: grid !important;
+  }
+  .buttonsmalldelete {
+    margin-top: 10px !important;
+    margin-left: 0px !important;
+  }
+}
+
 @keyframes glitch {
   0%,
   100% {
