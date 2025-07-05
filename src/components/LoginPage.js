@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../utils/api';
 import { toast, ToastContainer } from 'react-toastify';
+import { RotatingLines } from 'react-loader-spinner'; // Import loader
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -13,6 +15,7 @@ const LoginPage = () => {
   };
 
   const handleLogin = async () => {
+    setLoading(true); // Start loading
     try {
       const token = await login(loginData.email, loginData.password);
       localStorage.setItem('token', token);
@@ -28,6 +31,8 @@ const LoginPage = () => {
         position: 'top-right',
         autoClose: 3000,
       });
+    } finally {
+      setLoading(false); // Stop loading regardless of success or failure
     }
   };
 
@@ -67,9 +72,20 @@ const LoginPage = () => {
           <div className='space-y-2'>
             <button
               onClick={handleLogin}
-              className='w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-200'
+              className='w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-200 flex items-center justify-center'
+              disabled={loading}
             >
-              Login
+              {loading ? (
+                <RotatingLines
+                  strokeColor='white'
+                  strokeWidth='3'
+                  animationDuration='0.75'
+                  width='20'
+                  visible={true}
+                />
+              ) : (
+                'Login'
+              )}
             </button>
             <button
               onClick={() => navigate('/signup')}

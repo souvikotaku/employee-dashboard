@@ -14,6 +14,7 @@ import {
   fetchEmployeeByEmail,
 } from './utils/api';
 import { jwtDecode } from 'jwt-decode';
+import { RotatingLines } from 'react-loader-spinner'; // Import a cool loader
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -33,9 +34,11 @@ function App() {
     role: 'employee',
   });
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const loadEmployees = async () => {
+      setLoading(true); // Start loading
       const token = localStorage.getItem('token');
 
       if (token) {
@@ -55,6 +58,7 @@ function App() {
           setEmployees(filteredEmployees);
         }
       }
+      setLoading(false); // Stop loading after data is fetched
     };
     loadEmployees();
   }, []);
@@ -236,7 +240,17 @@ function App() {
         </div>
       )}
       <main className='p-4'>
-        {view === 'grid' ? (
+        {loading ? (
+          <div className='flex justify-center items-center h-64'>
+            <RotatingLines
+              strokeColor='green'
+              strokeWidth='5'
+              animationDuration='0.75'
+              width='96'
+              visible={true}
+            />
+          </div>
+        ) : view === 'grid' ? (
           <GridView
             employees={employees}
             onEdit={handleEditEmployee}
