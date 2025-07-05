@@ -6,6 +6,7 @@ import HorizontalMenu from './components/HorizontalMenu';
 import GridView from './components/GridView';
 import TileView from './components/TileView';
 import DetailedView from './components/DetailedView';
+import Header from './components/Header';
 import {
   fetchEmployees,
   addEmployee,
@@ -270,7 +271,7 @@ function App() {
           }
         `}
       </style>
-      <header className='flex items-center justify-between p-4 bg-gray-800 shadow-lg border-b border-green-500/30'>
+      {/* <header className='flex items-center justify-between p-4 bg-gray-800 shadow-lg border-b border-green-500/30'>
         <HamburgerMenu />
         <HorizontalMenu />
         <div className='flex space-x-4'>
@@ -316,7 +317,15 @@ function App() {
             )}
           </button>
         </div>
-      </header>
+      </header> */}
+      <Header
+        view={view}
+        setView={setView}
+        loggedInUser={loggedInUser}
+        handleAddEmployeeClick={handleAddEmployeeClick}
+        handleLogout={handleLogout}
+        isLoggingOut={isLoggingOut}
+      />
 
       {loggedInUser && (
         <div className='p-4 bg-gray-700 text-center border-b border-green-500/30 welcome-text'>
