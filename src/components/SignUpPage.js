@@ -64,7 +64,41 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+    <div className='min-h-screen relative flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+      <div
+        className='fixed pointer-events-none select-none overflow-hidden hidethisinmobile'
+        style={{
+          left: 0,
+          bottom: 0,
+          zIndex: 0,
+          width: '65rem',
+          opacity: 0.2,
+          transform: 'translateX(-25%)',
+        }}
+      >
+        <img
+          src='/warhammer3.png'
+          alt='Warhammer 40K Logo'
+          className='w-full'
+        />
+      </div>
+      <div
+        className='fixed pointer-events-none select-none overflow-hidden hidethisinmobile'
+        style={{
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+          width: '56rem',
+          opacity: 0.3,
+          transform: 'translateX(19%)',
+        }}
+      >
+        <img
+          src='/warhammer4.png'
+          alt='Warhammer 40K Logo'
+          className='w-full'
+        />
+      </div>
       <div className='bg-gray-800 p-6 rounded-lg shadow-lg w-96 border border-green-500/30'>
         <h2 className='text-3xl mb-6 text-center font-bold text-green-400 subtle-glow'>
           Sign Up

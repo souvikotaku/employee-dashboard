@@ -232,7 +232,7 @@ function App() {
           bottom: 0,
           zIndex: 0,
           width: '60rem',
-          opacity: 0.08,
+          opacity: 0.13,
           transform: 'rotate(30deg) translateX(-30%) translateY(30%)',
         }}
       >

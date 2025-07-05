@@ -79,6 +79,9 @@
   .hidethisinmobile {
     display: none !important;
   }
+  .loginbox {
+    margin: 6% !important;
+  }
 }
 
 @media (max-width: 1346px) {
