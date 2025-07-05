@@ -42,6 +42,7 @@ const LoginPage = () => {
         <h2 className='text-3xl mb-6 text-center font-bold text-green-400 subtle-glow'>
           Login
         </h2>
+
         <div className='space-y-4'>
           <div>
             <label className='block text-sm font-medium text-gray-300'>
@@ -70,7 +71,7 @@ const LoginPage = () => {
             />
           </div>
           <div className='space-y-2'>
-            <button
+            {/* <button
               onClick={handleLogin}
               className='w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-200 flex items-center justify-center'
               disabled={loading}
@@ -86,6 +87,24 @@ const LoginPage = () => {
               ) : (
                 'Login'
               )}
+            </button> */}
+            <button
+              className='w-full btn hologram flex items-center justify-center'
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <RotatingLines
+                  strokeColor='white'
+                  strokeWidth='3'
+                  animationDuration='0.75'
+                  width='20'
+                  visible={true}
+                />
+              ) : (
+                <span data-text='Login'>Login</span>
+              )}
+              <div className='scan-line'></div>
             </button>
             <button
               onClick={() => navigate('/signup')}
