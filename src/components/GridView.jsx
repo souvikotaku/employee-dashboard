@@ -19,13 +19,7 @@ const GridView = ({ employees, onEdit, onDelete }) => {
               Class
             </th>
             <th className='py-2 px-4 border border-green-500/30 text-green-400'>
-              Subject 1
-            </th>
-            <th className='py-2 px-4 border border-green-500/30 text-green-400'>
-              Subject 2
-            </th>
-            <th className='py-2 px-4 border border-green-500/30 text-green-400'>
-              Subject 3
+              Subjects
             </th>
             <th className='py-2 px-4 border border-green-500/30 text-green-400'>
               Attendance
@@ -35,6 +29,9 @@ const GridView = ({ employees, onEdit, onDelete }) => {
             </th>
             <th className='py-2 px-4 border border-green-500/30 text-green-400'>
               Phone
+            </th>
+            <th className='py-2 px-4 border border-green-500/30 text-green-400'>
+              Role
             </th>
             <th className='py-2 px-4 border border-green-500/30 text-green-400'>
               Action
@@ -59,14 +56,19 @@ const GridView = ({ employees, onEdit, onDelete }) => {
               <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
                 {employee.class}
               </td>
-              <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
-                {employee.subjects[0] || ''}
-              </td>
-              <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
-                {employee.subjects[1] || ''}
-              </td>
-              <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
-                {employee.subjects[2] || ''}
+              <td className='py-2 px-4 border border-green-500/30 text-gray-200 relative group'>
+                <span className='truncate block max-w-[150px]'>
+                  {employee.subjects.slice(0, 3).join(', ')}
+                  {employee.subjects.length > 3 && '...'}
+                </span>
+                {employee.subjects.length > 3 && (
+                  <div
+                    className='absolute hidden group-hover:block bg-gray-900 text-gray-200 text-sm rounded shadow-lg p-2 z-10 left-1/2 -translate-x-1/2 -mt-8 max-w-[400px] whitespace-normal break-words'
+                    style={{ top: 'auto', bottom: '100%' }}
+                  >
+                    {employee.subjects.join(', ')}
+                  </div>
+                )}
               </td>
               <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
                 {employee.attendance}
@@ -76,6 +78,9 @@ const GridView = ({ employees, onEdit, onDelete }) => {
               </td>
               <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
                 {employee.phone}
+              </td>
+              <td className='py-2 px-4 border border-green-500/30 text-gray-200'>
+                {employee.role || 'N/A'}
               </td>
               <td className='py-2 px-4 border border-green-500/30'>
                 <button
