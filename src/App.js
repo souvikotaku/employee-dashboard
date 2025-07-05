@@ -14,7 +14,7 @@ import {
   fetchEmployeeByEmail,
 } from './utils/api';
 import { jwtDecode } from 'jwt-decode';
-import { RotatingLines } from 'react-loader-spinner'; // Import a cool loader
+import { RotatingLines } from 'react-loader-spinner';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -34,11 +34,19 @@ function App() {
     role: 'employee',
   });
   const [loggedInUser, setLoggedInUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentEmployees = employees.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(employees.length / itemsPerPage);
 
   useEffect(() => {
     const loadEmployees = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       const token = localStorage.getItem('token');
 
       if (token) {
@@ -58,10 +66,14 @@ function App() {
           setEmployees(filteredEmployees);
         }
       }
-      setLoading(false); // Stop loading after data is fetched
+      setLoading(false);
     };
     loadEmployees();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to page 1 whenever employee list changes
+  }, [employees]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -231,6 +243,7 @@ function App() {
           </button>
         </div>
       </header>
+
       {loggedInUser && (
         <div className='p-4 bg-gray-700 text-center border-b border-green-500/30'>
           <h2 className='text-xl'>
@@ -239,6 +252,7 @@ function App() {
           </h2>
         </div>
       )}
+
       <main className='p-4'>
         {loading ? (
           <div className='flex justify-center items-center h-64'>
@@ -252,19 +266,53 @@ function App() {
           </div>
         ) : view === 'grid' ? (
           <GridView
-            employees={employees}
+            employees={currentEmployees}
             onEdit={handleEditEmployee}
             onDelete={handleDeleteEmployee}
           />
         ) : (
           <TileView
-            employees={employees}
+            employees={currentEmployees}
             onEdit={handleEditEmployee}
             onDelete={handleDeleteEmployee}
             onTileClick={setSelectedEmployee}
           />
         )}
+
+        {/* Pagination Controls */}
+        <div className='flex justify-center space-x-2 mt-6'>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className='px-3 py-1 rounded bg-gray-700 text-white disabled:opacity-50'
+          >
+            Prev
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === i + 1
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-700 text-white'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className='px-3 py-1 rounded bg-gray-700 text-white disabled:opacity-50'
+          >
+            Next
+          </button>
+        </div>
       </main>
+
       {selectedEmployee && (
         <DetailedView
           employee={selectedEmployee}
