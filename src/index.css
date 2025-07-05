@@ -72,6 +72,12 @@
   filter: blur(1px);
 }
 
+@media (max-width: 768px) {
+  .buttonres {
+    margin-left: 0 !important;
+  }
+}
+
 @keyframes glitch {
   0%,
   100% {

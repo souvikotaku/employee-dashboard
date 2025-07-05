@@ -35,6 +35,7 @@ function App() {
   });
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // New state for logout loading
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +56,7 @@ function App() {
         const userEmail = decodedToken.email;
         const userRole = decodedToken.role;
         const employee = await fetchEmployeeByEmail(userEmail);
-        setLoggedInUser({ ...employee, role: userRole });
+        setLoggedInUser({ ...employee, role: userRole, id: employee?.id });
 
         if (userRole === 'admin') {
           setEmployees(data);
@@ -72,17 +73,29 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to page 1 whenever employee list changes
+    setCurrentPage(1);
   }, [employees]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setLoggedInUser(null);
-    window.location.href = '/login';
-    toast.info('Logged out successfully!', {
-      position: 'top-right',
-      autoClose: 3000,
-    });
+  const handleLogout = async () => {
+    setIsLoggingOut(true); // Set logout loading state to true
+    try {
+      localStorage.removeItem('token');
+      setLoggedInUser(null);
+      toast.info('Logged out successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1000); // Small delay to show the loader
+    } catch (error) {
+      toast.error('Error logging out. Please try again.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoggingOut(false); // Reset logout loading state
+    }
   };
 
   const handleAddEmployeeClick = () => {
@@ -207,6 +220,56 @@ function App() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 to-black text-gray-200'>
+      <style>
+        {`
+          @media (max-width: 768px) {
+            header {
+              flex-direction: column;
+              padding: 1rem;
+            }
+            header div {
+              flex-direction: column;
+              width: 100%;
+              margin-top: 1rem;
+            }
+            header button {
+              width: 100%;
+              margin-bottom: 0.5rem;
+            }
+            .welcome-text {
+              font-size: 1rem;
+              padding: 1rem;
+            }
+            main {
+              padding: 1rem;
+            }
+            .modal {
+              padding: 1rem;
+            }
+            .modal div {
+              width: 90%;
+              padding: 1rem;
+            }
+            .modal form {
+              flex-direction: column;
+            }
+            .modal div div {
+              width: 100%;
+              margin-bottom: 0.5rem;
+            }
+            .modal input, .modal select {
+              width: 100%;
+            }
+            .pagination {
+              flex-direction: column;
+              align-items: center;
+            }
+            .pagination button {
+              margin: 0.25rem 0;
+            }
+          }
+        `}
+      </style>
       <header className='flex items-center justify-between p-4 bg-gray-800 shadow-lg border-b border-green-500/30'>
         <HamburgerMenu />
         <HorizontalMenu />
@@ -220,7 +283,7 @@ function App() {
             Grid View
           </button>
           <button
-            className={`px-4 py-2 rounded ${
+            className={`buttonres px-4 py-2 rounded ${
               view === 'tile' ? 'bg-green-600 text-white' : 'bg-gray-700'
             } hover:bg-green-700 transition duration-200`}
             onClick={() => setView('tile')}
@@ -229,23 +292,34 @@ function App() {
           </button>
           {loggedInUser?.role === 'admin' && (
             <button
-              className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
+              className='buttonres px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200'
               onClick={handleAddEmployeeClick}
             >
               Add Employee
             </button>
           )}
           <button
-            className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition duration-200'
+            className='buttonres px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition duration-200 flex items-center justify-center'
             onClick={handleLogout}
+            disabled={isLoggingOut}
           >
-            Logout
+            {isLoggingOut ? (
+              <RotatingLines
+                strokeColor='white'
+                strokeWidth='5'
+                animationDuration='0.75'
+                width='24'
+                visible={true}
+              />
+            ) : (
+              'Logout'
+            )}
           </button>
         </div>
       </header>
 
       {loggedInUser && (
-        <div className='p-4 bg-gray-700 text-center border-b border-green-500/30'>
+        <div className='p-4 bg-gray-700 text-center border-b border-green-500/30 welcome-text'>
           <h2 className='text-xl'>
             Welcome {loggedInUser.name.first} {loggedInUser.name.last} (
             {loggedInUser.email}) - Role: {loggedInUser.role}
@@ -269,6 +343,11 @@ function App() {
             employees={currentEmployees}
             onEdit={handleEditEmployee}
             onDelete={handleDeleteEmployee}
+            userId={loggedInUser?.id}
+            userRole={
+              localStorage.getItem('token') &&
+              jwtDecode(localStorage.getItem('token'))?.role
+            }
           />
         ) : (
           <TileView
@@ -276,11 +355,15 @@ function App() {
             onEdit={handleEditEmployee}
             onDelete={handleDeleteEmployee}
             onTileClick={setSelectedEmployee}
+            userId={loggedInUser?.id}
+            userRole={
+              localStorage.getItem('token') &&
+              jwtDecode(localStorage.getItem('token'))?.role
+            }
           />
         )}
 
-        {/* Pagination Controls */}
-        <div className='flex justify-center space-x-2 mt-6'>
+        <div className='flex justify-center space-x-2 mt-6 pagination'>
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
